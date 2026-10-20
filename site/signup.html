@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Demo business account - sign up</title>
+  <!-- Google Tag Manager: replace GTM-XXXXXXX with your container id -->
+  <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);})(window,document,'script','dataLayer','GTM-XXXXXXX');</script>
+  <script src="datalayer.js"></script>
+  <style>
+    body { font-family: system-ui, sans-serif; max-width: 520px; margin: 40px auto; padding: 0 16px; }
+    label { display: block; margin: 12px 0 4px; }
+    input, select { width: 100%; padding: 8px; }
+    button { margin-top: 16px; padding: 10px 16px; }
+  </style>
+</head>
+<body data-page-type="signup">
+  <h1>Open your business account</h1>
+  <form id="signup-form" data-version="v2">
+    <fieldset data-step="1">
+      <legend>Step 1 of 3: your company</legend>
+      <label for="company">Company name</label>
+      <input id="company" name="company" required>
+      <label for="company_size">Company size</label>
+      <select id="company_size" name="company_size" required>
+        <option value="">Choose</option><option>1</option><option>2-9</option><option>10-49</option><option>50+</option>
+      </select>
+      <button type="button" data-step-next="1" data-step-name="company">Next</button>
+    </fieldset>
+
+    <fieldset data-step="2">
+      <legend>Step 2 of 3: you</legend>
+      <label for="role">Your role</label>
+      <input id="role" name="role" required>
+      <button type="button" data-step-next="2" data-step-name="contact">Next</button>
+    </fieldset>
+
+    <fieldset data-step="3">
+      <legend>Step 3 of 3: confirm</legend>
+      <label><input type="checkbox" name="terms" required> I accept the terms</label>
+      <button type="submit">Create my account</button>
+    </fieldset>
+  </form>
+</body>
+</html>

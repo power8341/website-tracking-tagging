@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Demo business account - landing page</title>
+  <!-- Google Tag Manager: replace GTM-XXXXXXX with your container id -->
+  <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);})(window,document,'script','dataLayer','GTM-XXXXXXX');</script>
+  <script src="datalayer.js"></script>
+  <style>
+    body { font-family: system-ui, sans-serif; margin: 0; color: #1a202c; }
+    header, section { padding: 40px 24px; max-width: 900px; margin: auto; }
+    .plans { display: flex; gap: 16px; flex-wrap: wrap; }
+    .plan { border: 1px solid #cbd5e0; border-radius: 8px; padding: 16px; flex: 1; min-width: 200px; cursor: pointer; }
+    a.button { display: inline-block; background: #2b6cb0; color: white; padding: 12px 20px; border-radius: 6px; text-decoration: none; }
+  </style>
+</head>
+<body data-page-type="landing">
+  <header>
+    <h1>The business account for small companies</h1>
+    <p>Open your account online in 10 minutes. Cards, transfers and invoices in one place.</p>
+    <a class="button" href="signup.html" data-cta="hero">Open an account</a>
+  </header>
+
+  <section>
+    <h2>Pricing</h2>
+    <div class="plans">
+      <div class="plan" data-plan="basic" data-price="9"><h3>Basic</h3><p>9 EUR per month</p></div>
+      <div class="plan" data-plan="standard" data-price="19"><h3>Standard</h3><p>19 EUR per month</p></div>
+      <div class="plan" data-plan="premium" data-price="39"><h3>Premium</h3><p>39 EUR per month</p></div>
+    </div>
+    <p><a class="button" href="signup.html" data-cta="pricing">Start with this plan</a></p>
+  </section>
+
+  <section>
+    <a href="signup.html" data-cta="footer">Open an account</a>
+  </section>
+</body>
+</html>

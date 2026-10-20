@@ -1,46 +1,66 @@
 # Website Tracking and Tagging for Paid Acquisition
 
-**Status: in progress**
-
-A tracking setup for a simple website: a clear tracking plan, tags in Google Tag Manager, conversion events in GA4 and the Meta Pixel, and a data quality check to make sure the numbers can be trusted.
+A complete tracking setup for a sign-up website: a tracking plan, data layer events in JavaScript, Google Tag Manager configuration for GA4 and the Meta Pixel, and SQL checks that find tracking bugs in the GA4 export.
 
 ## Why this project
 
-Paid acquisition campaigns are only as good as their tracking. If a sign-up event is missing or counted twice, the team spends money on the wrong channels. This project shows how to set up tracking properly and check it.
+Paid acquisition campaigns are only as good as their tracking. If a sign-up is counted twice, or a paid click has no campaign name, the team moves budget to the wrong channels. This project covers the full chain: decide what to track, implement it, send it to the ad platforms, and check that the data can be trusted.
 
-## How it works
+## What is inside
 
-1. Write a tracking plan: which events to track (page view, sign-up started, sign-up completed, demo requested), with their properties.
-2. Build a simple test website and push events to the data layer with JavaScript.
-3. Configure tags, triggers and variables in Google Tag Manager.
-4. Send conversion events to GA4 and the Meta Pixel.
-5. Export GA4 data and run a SQL check: missing events, duplicates, unexpected values.
+| Part | File | What it does |
+|---|---|---|
+| Tracking plan | `docs/tracking_plan.md` | 8 events, their parameters, which ones are GA4 key events and Meta conversions, naming and privacy rules |
+| Demo website | `site/index.html`, `site/signup.html` | landing page with pricing plans and a 3-step sign-up form |
+| Data layer | `site/datalayer.js` | pushes every event to the GTM data layer, keeps UTM parameters for the session, fires `signup_completed` only once per sign-up |
+| GTM setup | `docs/gtm_setup.md` | variables, triggers and tags for GA4 and the Meta Pixel, consent mode, deduplication, test steps |
+| Data quality | `sql/`, `src/run_checks.py` | 5 SQL checks on a GA4 events export, with a markdown report |
+
+## Data layer in action
+
+Tested in a headless browser: a visitor comes from a Google Ads link, chooses the Premium plan, forgets a field, then completes the sign-up:
+
+```json
+{"event": "signup_started", "utm_source": "google", "utm_medium": "cpc", "utm_campaign": "brand_fr", "plan_name": "premium", "form_version": "v2"}
+{"event": "form_error", "field_name": "company_size", "error_type": "missing"}
+{"event": "signup_step_completed", "step_number": 1, "step_name": "company"}
+{"event": "signup_step_completed", "step_number": 2, "step_name": "contact"}
+{"event": "signup_completed", "plan_name": "premium", "company_size": "2-9", "signup_id": "su_1792515564743"}
+```
+
+## Tracking quality checks
+
+Run on a simulated GA4 export of 9,976 events with realistic bugs ([full report](reports/tracking_quality_report.md)):
+
+| Check | Result | Impact |
+|---|---|---|
+| Unknown events | 23 `SignUpComplete` events from a forgotten legacy tag | conversions counted under two names |
+| Missing parameters | 47 `signup_started` without `plan_name` | plan analysis incomplete |
+| Duplicate conversions | 50 sign-ups fired twice: 724 reported for 674 real | **conversions overcounted by 7.4%**, ad platforms optimise on wrong data |
+| Completed without started | 49 sessions (7.3%) | `signup_started` trigger misses some users |
+| Paid traffic without campaign | 6.7% of Google Ads and 6.4% of paid social sessions | spend cannot be matched to results |
+
+The fixes are in the implementation: `trackOnce()` prevents double firing, the event list is fixed by the tracking plan, and the Meta CompleteRegistration tag uses `signup_id` as eventID for deduplication.
+
+## How to run
+
+```bash
+pip install -r requirements.txt
+
+# Data quality checks
+python data/generate_ga4_export.py
+python -m src.run_checks
+python -m pytest -q
+
+# Demo site: open site/index.html in a browser with ?utm_source=google&utm_medium=cpc&utm_campaign=test
+# and watch the [tracking] logs in the browser console.
+```
+
+To connect the site to real tools: create a free GTM container and GA4 property, replace `GTM-XXXXXXX` in the HTML files, and follow `docs/gtm_setup.md`.
 
 ## Tech stack
 
-Google Tag Manager, GA4, JavaScript, Meta Pixel, SQL
-
-## Progress
-
-- [ ] Tracking plan design
-- [ ] Test website with data layer events
-- [x] Google Tag Manager configuration
-- [ ] GA4 and Meta Pixel conversion events
-- [ ] SQL data quality check
-
-## Planned structure
-
-```
-website-tracking-tagging/
-  docs/
-    tracking_plan.md
-  site/
-    index.html
-    datalayer.js
-  sql/
-    tracking_quality_checks.sql
-  README.md
-```
+JavaScript, Google Tag Manager, GA4, Meta Pixel, SQL (DuckDB), Python
 
 ## Author
 
